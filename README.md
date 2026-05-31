@@ -16,25 +16,50 @@
 
 [Docs](https://docs.rs/range-cmp/latest/range_cmp/)
 
-This Rust crate provides the `RangeComparable` trait on all types that
-implement `Ord`. This traits exposes a `rcmp` associated method
+This Rust crate provides the `RangeOrd` trait on all types that
+implement `Ord`. This trait exposes a `rcmp` associated method
 that allows comparing a value with a range of values:
 
 ```rust
-use range_cmp::{RangeComparable, RangeOrdering};
+use range_cmp::{RangeOrd, RangeOrdering};
 assert_eq!(15.rcmp(20..30), RangeOrdering::Below);
 assert_eq!(25.rcmp(20..30), RangeOrdering::Inside);
 assert_eq!(35.rcmp(20..30), RangeOrdering::Above);
 ```
+
 ## Empty ranges handling
 
-This crate _does not_ strictly handle empty ranges, 
-which are not mathematically comparable. In this case, 
-range_cmp will show different behavior depending on
-the representation of the empty range. For instance:
+Empty ranges are handled explicitly, instead of returning an arbitrary,
+representation-dependent answer. An empty range is reported as
+`RangeOrdering::Empty`:
 
 ```rust
-assert_eq!(30.range_cmp(45..35), RangeOrdering::Below);
-assert_eq!(30.range_cmp(25..15), RangeOrdering::Above);
-assert_eq!(0.range_cmp(0..0), RangeOrdering::Above);
+use range_cmp::{RangeOrd, RangeOrdering};
+assert_eq!(30.rcmp(45..35), RangeOrdering::Empty);
+assert_eq!(30.rcmp(25..15), RangeOrdering::Empty);
+assert_eq!(0.rcmp(0..0), RangeOrdering::Empty);
+```
+
+Emptiness is judged from the *bounds*, not from the population of the type:
+`..0u32` is treated as a regular (non-empty) range even though no `u32` is
+below `0`.
+
+## Partial orders
+
+The crate also provides the `PartialRangeOrd` trait on all types that
+implement `PartialOrd`. Because a partial order is a poset rather than a
+line, a value may be incomparable with one or both bounds, so a single
+`Below`/`Inside`/`Above` verdict is not always meaningful. `partial_rcmp`
+therefore returns a `RangePosition`: the *pair* of the value's relationships
+to the lower and upper bounds, which never loses information. Use
+`RangePosition::ordering` to collapse it into a simple `RangeOrdering` when
+the value is comparable with both bounds.
+
+```rust
+use range_cmp::{PartialRangeOrd, RangeOrdering};
+assert_eq!(1.5_f64.partial_rcmp(2.0..3.0).ordering(), Some(RangeOrdering::Below));
+assert_eq!(2.5_f64.partial_rcmp(2.0..3.0).ordering(), Some(RangeOrdering::Inside));
+assert_eq!(3.5_f64.partial_rcmp(2.0..3.0).ordering(), Some(RangeOrdering::Above));
+// `NaN` is incomparable with the bounds:
+assert_eq!(f64::NAN.partial_rcmp(2.0..3.0).ordering(), None);
 ```
