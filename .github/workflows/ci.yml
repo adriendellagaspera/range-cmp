@@ -20,10 +20,10 @@ jobs:
     name: Format, lint and docs
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v3
     - name: Install toolchain
       run: rustup component add rustfmt clippy
-    - uses: actions/cache@v4
+    - uses: actions/cache@v3
       with:
         path: |
           ~/.cargo/registry
@@ -44,12 +44,12 @@ jobs:
       matrix:
         toolchain: [ stable, beta, "1.56" ]
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v3
     - name: Install toolchain
       run: |
         rustup toolchain install ${{ matrix.toolchain }} --profile minimal --no-self-update
         rustup default ${{ matrix.toolchain }}
-    - uses: actions/cache@v4
+    - uses: actions/cache@v3
       with:
         path: |
           ~/.cargo/registry
@@ -64,7 +64,7 @@ jobs:
     name: Build without std
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v3
     - name: Add bare-metal target
       run: rustup target add thumbv7em-none-eabi
     - name: Build for a bare-metal target
@@ -74,6 +74,6 @@ jobs:
     name: Package (publish dry-run)
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v3
     - name: Verify the crate packages cleanly
       run: cargo publish --dry-run
