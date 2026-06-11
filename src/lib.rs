@@ -50,10 +50,18 @@
 //! // `NaN` is incomparable with the bounds, so there is no single verdict:
 //! assert_eq!(f64::NAN.partial_rcmp(2.0..3.0).ordering(), None);
 //! ```
+//!
+//! # `no_std`
+//!
+//! The crate is `#![no_std]`: it has no dependencies and only relies on `core`, so it
+//! can be used in embedded and other environments without the standard library.
+#![cfg_attr(not(test), no_std)]
+#![forbid(unsafe_code)]
+#![warn(missing_docs)]
 
-use std::borrow::Borrow;
-use std::cmp::Ordering;
-use std::ops::{Bound, RangeBounds};
+use core::borrow::Borrow;
+use core::cmp::Ordering;
+use core::ops::{Bound, RangeBounds};
 
 /// Simplified result for [`RangeOrd::rcmp`], obtained for totally ordered types or by
 /// collapsing a [`RangePosition`] through [`RangePosition::ordering`].
@@ -241,9 +249,9 @@ fn range_is_empty<T: Ord, R: RangeBounds<T>>(range: &R) -> bool {
 ///   | ^ cannot infer type of the type parameter `R` declared on the function `f`
 /// ```
 ///
-/// Indeed, although we understand we want to pass a [`Range`](std::ops::Range)`<`[`i32`]`>` by
+/// Indeed, although we understand we want to pass a [`Range`](core::ops::Range)`<`[`i32`]`>` by
 /// reference, the compiler need to assume that other types could yield a
-/// `&`[`Range`](std::ops::Range)`<`[`i32`]`>` when borrowed.
+/// `&`[`Range`](core::ops::Range)`<`[`i32`]`>` when borrowed.
 pub trait BorrowRange<T: ?Sized, R>: Borrow<R> {}
 impl<T, R: RangeBounds<T>> BorrowRange<T, R> for R {}
 impl<T, R: RangeBounds<T>> BorrowRange<T, R> for &R {}
