@@ -1,8 +1,8 @@
 [package]
 name = "range-cmp"
 version = "0.3.0"
-edition = "2021"
-rust-version = "1.56"
+edition = "2018"
+rust-version = "1.35"
 license = "MIT OR Apache-2.0"
 description = "Trait that allows comparing a value to a range of values"
 repository = "https://github.com/Akvize/range-cmp"

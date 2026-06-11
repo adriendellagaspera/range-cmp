@@ -48,7 +48,7 @@
 //! assert_eq!(2.5_f64.partial_rcmp(2.0..3.0).ordering(), Some(RangeOrdering::Inside));
 //! assert_eq!(3.5_f64.partial_rcmp(2.0..3.0).ordering(), Some(RangeOrdering::Above));
 //! // `NaN` is incomparable with the bounds, so there is no single verdict:
-//! assert_eq!(f64::NAN.partial_rcmp(2.0..3.0).ordering(), None);
+//! assert_eq!(core::f64::NAN.partial_rcmp(2.0..3.0).ordering(), None);
 //! ```
 //!
 //! # `no_std`
@@ -121,10 +121,7 @@ impl RangePosition {
     /// assert!(!3.5_f64.partial_rcmp(2.0..3.0).is_inside());
     /// ```
     pub fn is_inside(&self) -> bool {
-        matches!(
-            (self.lower, self.upper),
-            (BoundOrdering::Within, BoundOrdering::Within)
-        )
+        self.lower == BoundOrdering::Within && self.upper == BoundOrdering::Within
     }
 
     /// Collapses the pair into a simple [`RangeOrdering`] when possible.
@@ -154,11 +151,11 @@ fn lower_ordering<T: PartialOrd>(value: &T, bound: Bound<&T>) -> BoundOrdering {
         Bound::Unbounded => BoundOrdering::Within,
         Bound::Included(key) => match value.partial_cmp(key) {
             Some(Ordering::Less) => BoundOrdering::Outside,
-            Some(Ordering::Equal | Ordering::Greater) => BoundOrdering::Within,
+            Some(Ordering::Equal) | Some(Ordering::Greater) => BoundOrdering::Within,
             None => BoundOrdering::Incomparable,
         },
         Bound::Excluded(key) => match value.partial_cmp(key) {
-            Some(Ordering::Less | Ordering::Equal) => BoundOrdering::Outside,
+            Some(Ordering::Less) | Some(Ordering::Equal) => BoundOrdering::Outside,
             Some(Ordering::Greater) => BoundOrdering::Within,
             None => BoundOrdering::Incomparable,
         },
@@ -171,11 +168,11 @@ fn upper_ordering<T: PartialOrd>(value: &T, bound: Bound<&T>) -> BoundOrdering {
         Bound::Unbounded => BoundOrdering::Within,
         Bound::Included(key) => match value.partial_cmp(key) {
             Some(Ordering::Greater) => BoundOrdering::Outside,
-            Some(Ordering::Equal | Ordering::Less) => BoundOrdering::Within,
+            Some(Ordering::Equal) | Some(Ordering::Less) => BoundOrdering::Within,
             None => BoundOrdering::Incomparable,
         },
         Bound::Excluded(key) => match value.partial_cmp(key) {
-            Some(Ordering::Greater | Ordering::Equal) => BoundOrdering::Outside,
+            Some(Ordering::Greater) | Some(Ordering::Equal) => BoundOrdering::Outside,
             Some(Ordering::Less) => BoundOrdering::Within,
             None => BoundOrdering::Incomparable,
         },
@@ -303,7 +300,7 @@ pub trait PartialRangeOrd {
     /// assert_eq!(2.5_f64.partial_rcmp(2.0..3.0).ordering(), Some(RangeOrdering::Inside));
     /// assert_eq!(3.5_f64.partial_rcmp(2.0..3.0).ordering(), Some(RangeOrdering::Above));
     /// // `NaN` is incomparable with the bounds:
-    /// assert_eq!(f64::NAN.partial_rcmp(2.0..3.0).ordering(), None);
+    /// assert_eq!(core::f64::NAN.partial_rcmp(2.0..3.0).ordering(), None);
     /// ```
     fn partial_rcmp<R: RangeBounds<Self>, B: BorrowRange<Self, R>>(
         &self,

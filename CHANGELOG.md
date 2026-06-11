@@ -11,8 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - The crate is now `#![no_std]`. It has no dependencies and relies only on `core`,
   so it can be used in embedded and other environments without the standard library.
-- Cargo manifest metadata for crates.io: `keywords`, `categories`, `rust-version`
-  (MSRV 1.56), and `readme`.
+- Cargo manifest metadata for crates.io: `keywords`, `categories`, `rust-version`,
+  and `readme`.
+
+### Changed
+
+- Lowered the MSRV to **1.35** (the floor of the `RangeBounds` API) by switching to
+  edition 2018 and avoiding later-stabilized conveniences (nested or-patterns,
+  the `matches!` macro, and the `f64::NAN` associated constant). No API changes.
 
 ## [0.3.0]
 
