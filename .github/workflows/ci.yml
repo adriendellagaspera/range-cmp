@@ -21,9 +21,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - uses: dtolnay/rust-toolchain@stable
-      with:
-        components: rustfmt, clippy
+    - name: Install toolchain
+      run: rustup component add rustfmt clippy
     - uses: actions/cache@v4
       with:
         path: |
@@ -46,9 +45,10 @@ jobs:
         toolchain: [ stable, beta, "1.56" ]
     steps:
     - uses: actions/checkout@v4
-    - uses: dtolnay/rust-toolchain@master
-      with:
-        toolchain: ${{ matrix.toolchain }}
+    - name: Install toolchain
+      run: |
+        rustup toolchain install ${{ matrix.toolchain }} --profile minimal --no-self-update
+        rustup default ${{ matrix.toolchain }}
     - uses: actions/cache@v4
       with:
         path: |
@@ -65,9 +65,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - uses: dtolnay/rust-toolchain@stable
-      with:
-        targets: thumbv7em-none-eabi
+    - name: Add bare-metal target
+      run: rustup target add thumbv7em-none-eabi
     - name: Build for a bare-metal target
       run: cargo build --target thumbv7em-none-eabi --verbose
 
@@ -76,6 +75,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - uses: dtolnay/rust-toolchain@stable
     - name: Verify the crate packages cleanly
       run: cargo publish --dry-run
