@@ -1,4 +1,4 @@
-# range_cmp
+# range-cmp
 
 [![Crates.io][crates-badge]][crates-url]
 [![MIT licensed][mit-badge]][mit-url]
@@ -26,6 +26,10 @@ assert_eq!(15.rcmp(20..30), RangeOrdering::Below);
 assert_eq!(25.rcmp(20..30), RangeOrdering::Inside);
 assert_eq!(35.rcmp(20..30), RangeOrdering::Above);
 ```
+
+The crate is `#![no_std]` and has zero dependencies, so it can be used in embedded
+and other environments without the standard library. Its MSRV (minimum supported
+Rust version) is 1.35.
 
 ## Empty ranges handling
 
