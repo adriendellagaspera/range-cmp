@@ -5,7 +5,11 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.0.0] - 2026-06-11
+
+First stable release. The public API (`RangeOrd`/`rcmp`, `PartialRangeOrd`/
+`partial_rcmp`, `RangeOrdering`, `RangePosition`, `BoundOrdering`, `BorrowRange`) is
+now considered stable and will follow SemVer.
 
 ### Added
 
@@ -52,7 +56,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Initial published releases (`0.1.0` through `0.1.3`).
 
-[Unreleased]: https://github.com/Akvize/range-cmp/compare/v0.3.0...HEAD
+[1.0.0]: https://github.com/Akvize/range-cmp/releases/tag/v1.0.0
 [0.3.0]: https://github.com/Akvize/range-cmp/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/Akvize/range-cmp/compare/v0.1.3...v0.2.0
 [0.1.3]: https://github.com/Akvize/range-cmp/releases/tag/v0.1.3
