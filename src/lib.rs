@@ -19,8 +19,7 @@
 //!
 //! # Empty ranges
 //!
-//! Unlike previous versions, the crate now handles empty ranges explicitly, instead
-//! of returning an arbitrary, representation-dependent answer. An empty range (such as
+//! An empty range (such as
 //! `30..20` or `0..0`) is reported as [`RangeOrdering::Empty`]:
 //!
 //! ```
